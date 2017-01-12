@@ -1,0 +1,27 @@
+{
+  "name": "param-types",
+  "version": "0.1.0",
+  "description": "Parameter types validator",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require babel-register",
+    "test:watch": "npm run test -- --watch",
+    "test:cover": "istanbul cover node_modules/mocha/bin/_mocha -- --require babel-core/register"
+  },
+  "keywords": [
+    "validator",
+    "schema"
+  ],
+  "author": "LaySent <laysent@hotmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-register": "^6.18.0",
+    "chai": "^3.5.0",
+    "istanbul": "^1.0.0-alpha",
+    "mocha": "^3.2.0",
+    "rollup": "^0.41.1",
+    "rollup-plugin-replace": "^1.1.1",
+    "sinon": "^1.17.7",
+    "uglify-js": "^2.7.5"
+  }
+}
