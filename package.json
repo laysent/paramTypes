@@ -4,9 +4,10 @@
   "description": "Parameter types validator",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require babel-register",
-    "test:watch": "npm run test -- --watch",
-    "test:cover": "istanbul cover node_modules/mocha/bin/_mocha -- --require babel-core/register"
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- --require babel-core/register",
+    "test:once": "mocha --require babel-register",
+    "test:watch": "npm run test:once -- --watch",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "keywords": [
     "validator",
@@ -17,6 +18,7 @@
   "devDependencies": {
     "babel-register": "^6.18.0",
     "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
     "istanbul": "^1.0.0-alpha",
     "mocha": "^3.2.0",
     "rollup": "^0.41.1",
