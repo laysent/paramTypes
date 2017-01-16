@@ -10,8 +10,13 @@
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "keywords": [
-    "validator",
-    "schema"
+    "parameter",
+    "params",
+    "param",
+    "validation",
+    "schema",
+    "type",
+    "check"
   ],
   "author": "LaySent <laysent@hotmail.com>",
   "license": "MIT",
