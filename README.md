@@ -1,3 +1,6 @@
+![build status](https://travis-ci.org/laysent/paramTypes.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/laysent/paramTypes/badge.svg?branch=master)](https://coveralls.io/github/laysent/paramTypes?branch=master)
+
 ## Motivation
 
 Since JavaScript is a dynamic programming language with weak type system built-in, it requires much
