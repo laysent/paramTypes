@@ -7,7 +7,8 @@
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- --require babel-register",
     "test:once": "mocha --require babel-register",
     "test:watch": "npm run test:once -- --watch",
-    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+    "example": "node ./examples/build.js"
   },
   "keywords": [
     "parameter",
