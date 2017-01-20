@@ -15,19 +15,20 @@ function getValueType(value) {
   return type;
 }
 
-function createChainableTypeChecker(validate) {
-  function checkType(isRequired, value, methodName, location) {
+function requiredWrapper(validator) {
+  return function wrapper(value, methodName, location) {
     if (value == null) {
-      if (isRequired) {
-        return new Error(`Required ${location} parameter was not specified in ${methodName}.`);
-      }
-      return null;
+      return new Error(`Required ${location} parameter was not specified in ${methodName}.`);
     }
-    return validate(value, methodName, location);
-  }
-  const chainedCheckType = checkType.bind(null, false);
-  chainedCheckType.isRequired = checkType.bind(null, true);
-  return chainedCheckType;
+    return validator(value, methodName, location);
+  };
+}
+
+function nullableChecker(validator) {
+  return function wrapper(value, methodName, location) {
+    if (value == null) return null;
+    return validator(value, methodName, location);
+  };
 }
 
 function createPrimitiveTypeChecker(expectedType) {
@@ -41,7 +42,7 @@ function createPrimitiveTypeChecker(expectedType) {
     }
     return null;
   }
-  return createChainableTypeChecker(validate);
+  return requiredWrapper(validate);
 }
 
 function createArrayOfTypeChecker(typeChecker) {
@@ -59,16 +60,15 @@ function createArrayOfTypeChecker(typeChecker) {
     }
     return null;
   }
-  return createChainableTypeChecker(validate);
+  return requiredWrapper(validate);
 }
 
 function createRestOfTypeChecker(typeChecker) {
   function validate(value, methodName, location) {
     return typeChecker(value, methodName, location);
   }
-  const chainableValidate = createChainableTypeChecker(validate);
+  const chainableValidate = requiredWrapper(validate);
   chainableValidate[isRestOfAttribute] = true;
-  chainableValidate.isRequired[isRestOfAttribute] = true;
   return chainableValidate;
 }
 
@@ -82,7 +82,7 @@ function createInstanceTypeChecker(expectedClass) {
     }
     return null;
   }
-  return createChainableTypeChecker(validate);
+  return requiredWrapper(validate);
 }
 
 function createObjectOfTypeChecker(typeChecker) {
@@ -104,7 +104,7 @@ function createObjectOfTypeChecker(typeChecker) {
     }
     return null;
   }
-  return createChainableTypeChecker(validate);
+  return requiredWrapper(validate);
 }
 
 function createEnumTypeChecker(expectedValues) {
@@ -119,7 +119,7 @@ function createEnumTypeChecker(expectedValues) {
       `expected to be one of ${valueString}.`,
     ].join(''));
   }
-  return createChainableTypeChecker(validate);
+  return requiredWrapper(validate);
 }
 
 function createUnionTypeChecker(arrayOfTypeCheckers) {
@@ -132,7 +132,7 @@ function createUnionTypeChecker(arrayOfTypeCheckers) {
       `Invalid ${location} parameter of value ${value} supplied to ${methodName}, `
     );
   }
-  return createChainableTypeChecker(validate);
+  return requiredWrapper(validate);
 }
 
 function createShapeTypeChecker(shapeTypes) {
@@ -152,7 +152,7 @@ function createShapeTypeChecker(shapeTypes) {
     }
     return null;
   }
-  return createChainableTypeChecker(validate);
+  return requiredWrapper(validate);
 }
 
 const validator = ifShouldThrow => (methodName, ...schemas) => {
@@ -181,7 +181,6 @@ const validator = ifShouldThrow => (methodName, ...schemas) => {
   };
 };
 
-
 export const array = createPrimitiveTypeChecker('array');
 export const bool = createPrimitiveTypeChecker('boolean');
 export const func = createPrimitiveTypeChecker('function');
@@ -192,7 +191,8 @@ export const symbol = createPrimitiveTypeChecker('symbol');
 export const date = createPrimitiveTypeChecker('date');
 export const regexp = createPrimitiveTypeChecker('regexp');
 
-export const any = createChainableTypeChecker(() => null);
+export const any = () => null;
+export const required = requiredWrapper(any);
 export const arrayOf = createArrayOfTypeChecker;
 export const instanceOf = createInstanceTypeChecker;
 export const objectOf = createObjectOfTypeChecker;
@@ -200,6 +200,7 @@ export const oneOf = createEnumTypeChecker;
 export const oneOfType = createUnionTypeChecker;
 export const shape = createShapeTypeChecker;
 export const restOf = createRestOfTypeChecker;
+export const nullable = nullableChecker;
 
 /* istanbul ignore next */ export const validate =
   process.env.NODE_ENV === 'production' ? () => () => { } : validator(false);
