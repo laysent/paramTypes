@@ -2,14 +2,13 @@ const { rollup } = require('rollup');
 const babel = require('rollup-plugin-babel');
 const uglify = require('uglify-js');
 const fs = require('fs');
-const plugin = require('./plugin').default;
 
 rollup({
   entry: './examples/index.js',
   plugins: [
     babel({
       presets: ['es2015-rollup'],
-      plugins: [[plugin, { modules: ['../index'] }]],
+      plugins: [['strip-module', { modules: ['../index'] }]],
       babelrc: false,
     }),
   ],
